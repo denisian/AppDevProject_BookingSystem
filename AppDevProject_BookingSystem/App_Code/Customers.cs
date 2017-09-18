@@ -194,8 +194,8 @@ namespace AppDevProject_BookingSystem
         /// <summary>
         /// Deleting customers
         /// </summary>
-        /// <param name="_customerId"></param>
-        public void DeleteCustomer()
+        /// <param name="customerId"></param>
+        public void DeleteCustomer(int customerId)
         {
             using (conn = new SqlConnection(connStr))
             {
@@ -204,7 +204,7 @@ namespace AppDevProject_BookingSystem
                     conn.Open();
                     string deleteCustomer = "delete from Customers where id = @id";
                     cmd = new SqlCommand(deleteCustomer, conn);
-                    cmd.Parameters.AddWithValue("@id", _customerId);
+                    cmd.Parameters.AddWithValue("@id", customerId);
 
                     if (cmd.ExecuteNonQuery() == 1)
                         _message = "Customer has been deleted succesfully";

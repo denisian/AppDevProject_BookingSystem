@@ -360,7 +360,7 @@ namespace AppDevProject_BookingSystem
         /// Method for deleting bookings
         /// </summary>
         /// <param name="bookingId"></param>
-        public void DeleteBooking(int bookingId)
+        public bool DeleteBooking(int bookingId)
         {
             using (conn = new SqlConnection(connStr))
             {
@@ -376,11 +376,17 @@ namespace AppDevProject_BookingSystem
                     {
                         conn.Open();
                         if (cmd.ExecuteNonQuery() == 1)
+                        {
                             _message = "Booking has been deleted succesfully";
+                            return true;
+                        }
+                        else
+                            return false;
                     }
                     catch (SqlException e)
                     {
                         _message = e.Message;
+                        return false;
                     }
                     finally
                     {

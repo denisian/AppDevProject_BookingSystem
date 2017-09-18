@@ -343,7 +343,8 @@ namespace AppDevProject_BookingSystem
                         }
 
                         // Getting Customer ID to add Booking
-                        bookingSingleton.booking.customerId = customer.CustomerId;
+                        int customerId = customer.CustomerId;
+                        bookingSingleton.booking.customerId = customerId;
 
                         if (bookingSingleton.booking.AddBooking()) // If booking was successfull
                         {
@@ -362,7 +363,7 @@ namespace AppDevProject_BookingSystem
                         }
                         else
                         {
-                            customer.DeleteCustomer(); // If booking adding has been unsuccessfull, deleting customer
+                            customer.DeleteCustomer(customerId); // If booking adding has been unsuccessfull, deleting customer
                             MessageBox.Show(bookingSingleton.booking.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }

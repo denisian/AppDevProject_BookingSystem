@@ -205,7 +205,6 @@
             this.dataGridViewBooking.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewBooking.Size = new System.Drawing.Size(358, 444);
             this.dataGridViewBooking.TabIndex = 7;
-            this.dataGridViewBooking.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewBooking_CellClick);
             this.dataGridViewBooking.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewBooking_CellDoubleClick);
             this.dataGridViewBooking.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dataGridViewBooking_MouseClick);
             // 

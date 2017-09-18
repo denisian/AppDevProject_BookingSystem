@@ -58,9 +58,11 @@ namespace AppDevProject_BookingSystem
                             rowNumber = row.Index;
             }
 
-            dataGridViewTables.Rows[rowNumber].Selected = true;
-
-            dataGridViewTables_CellClick(dataGridViewTables, new DataGridViewCellEventArgs(0, rowNumber)); // Getting an id of the selected row
+            if (dataGridViewTables.Rows.Count > 0)
+            {
+                dataGridViewTables.Rows[rowNumber].Selected = true;
+                dataGridViewTables_CellClick(dataGridViewTables, new DataGridViewCellEventArgs(0, rowNumber)); // Getting an id of the selected row
+            }
         }
 
         // Setting accessibility of form' controls depending on an access level

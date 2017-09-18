@@ -25,8 +25,6 @@ namespace AppDevProject_BookingSystem
         private int indexRemovedTable; // Use to pass removed Table index from picBox_MouseClick to RemovePictureBox() (from context menu)
         private int idRemovedTable; // Use to pass removed Table id from picBox_MouseClick to RemovePictureBox() (from context menu)
 
-        private int selectedRowIndex; // Use to pass rowIndex in the EditBooking() method
-
         private List<int> listPixBoxTablesIdFromDb; // Keep saved in the database tables Id in order to add new ones on the map without undublicated
         private SortedList listPixBoxTablesIdFree; // Difference between dtPicBoxTables (Full list of tables) and listPixBoxTablesIdFromDb (saved tables) - free tables id
         private SortedList listPicBoxRemovedTables; // List of removed tables
@@ -43,6 +41,7 @@ namespace AppDevProject_BookingSystem
 
         StoringMapSettings mapSettings;
         Employees employee;
+        Customers customer;
         Singleton bookingSingleton;
 
         private DateTime bookingDateTime; // Using in RemoveTable to find out the booking ID
@@ -233,56 +232,63 @@ namespace AppDevProject_BookingSystem
         // Making this method private to use it in the ManageBookings and ManageTables class to reload the map after updating tables
         public void RetrievingTableMapFromDatabase(byte restaurantId)
         {
-            GetTablesData();
-
-            if (mapSettings.RetrievingTableMap(restaurantId)) // If retrieving was successful
+            try
             {
-                // Delete tables which have not been saved
-                pnlTables.Controls.Clear();
-                foreach (PictureBox picbox in pnlTables.Controls)
-                    picbox.Dispose();
+                GetTablesData();
 
-                // Getting table map
-                if (mapSettings.TableMapImage != null)
+                if (mapSettings.RetrievingTableMap(restaurantId)) // If retrieving was successful
                 {
-                    pnlTables.BackgroundImage = Image.FromStream(new MemoryStream(mapSettings.TableMapImage));
-                    pnlTables.BackgroundImageLayout = ImageLayout.Stretch; // Stretches the image to fit the pictureBox.
-                }
+                    // Delete tables which have not been saved
+                    pnlTables.Controls.Clear();
+                    foreach (PictureBox picbox in pnlTables.Controls)
+                        picbox.Dispose();
 
-                listPixBoxTablesIdFromDb.Clear();
-                listPicBoxRemovedTables.Clear();
-
-                // Getting table parameters
-                if (!String.IsNullOrEmpty(mapSettings.TableMapConfig))
-                {
-                    string[] picBoxTableOnMap = mapSettings.TableMapConfig.Split('@');
-                    dimPicBoxTableOnMap = picBoxTableOnMap.Length - 1; // the number tables saved in the database (-1 because we save also form size)
-
-                    int tableIndex = 0;
-                    foreach (string mapParameter in picBoxTableOnMap) // For each table we are getting its parameters (id, locationX and locationY)
+                    // Getting table map
+                    if (mapSettings.TableMapImage != null)
                     {
-                        int[] parameter = mapParameter.Split(';').Select(int.Parse).ToArray(); // Parse string array to int array
-
-                        if (parameter[0] == 0) // If a parameter of the first row is 0 (form size), getting value ans skip one iteration
-                        {
-                            this.Size = new Size(parameter[1], parameter[2]); // Getting form size
-                            continue;
-                        }
-
-                        int tableId = parameter[0];
-                        listPixBoxTablesIdFromDb.Add(tableId); // use in AddPictureBox()
-                        int tableLocationX = parameter[1];
-                        int tableLocationY = parameter[2];
-                        CreatePictureBox(false, tableIndex, tableId, tableLocationX, tableLocationY); // Creating new pictureBoxes on the pnlTables using table parameters from the database
-                        tableIndex++;
+                        pnlTables.BackgroundImage = Image.FromStream(new MemoryStream(mapSettings.TableMapImage));
+                        pnlTables.BackgroundImageLayout = ImageLayout.Stretch; // Stretches the image to fit the pictureBox.
                     }
-                }
-                GettingFreeTablesIdToAdd(dimPicBoxTableOnMap); // Getting list of free tables id, which are not in the database (not in the listPixBoxTablesIdFromDb) and passing there index to start
 
-                DisableAddTableBtn();
+                    listPixBoxTablesIdFromDb.Clear();
+                    listPicBoxRemovedTables.Clear();
+
+                    // Getting table parameters
+                    if (!String.IsNullOrEmpty(mapSettings.TableMapConfig))
+                    {
+                        string[] picBoxTableOnMap = mapSettings.TableMapConfig.Split('@');
+                        dimPicBoxTableOnMap = picBoxTableOnMap.Length - 1; // the number tables saved in the database (-1 because we save also form size)
+
+                        int tableIndex = 0;
+                        foreach (string mapParameter in picBoxTableOnMap) // For each table we are getting its parameters (id, locationX and locationY)
+                        {
+                            int[] parameter = mapParameter.Split(';').Select(int.Parse).ToArray(); // Parse string array to int array
+
+                            if (parameter[0] == 0) // If a parameter of the first row is 0 (form size), getting value ans skip one iteration
+                            {
+                                this.Size = new Size(parameter[1], parameter[2]); // Getting form size
+                                continue;
+                            }
+
+                            int tableId = parameter[0];
+                            listPixBoxTablesIdFromDb.Add(tableId); // use in AddPictureBox()
+                            int tableLocationX = parameter[1];
+                            int tableLocationY = parameter[2];
+                            CreatePictureBox(false, tableIndex, tableId, tableLocationX, tableLocationY); // Creating new pictureBoxes on the pnlTables using table parameters from the database
+                            tableIndex++;
+                        }
+                    }
+                    GettingFreeTablesIdToAdd(dimPicBoxTableOnMap); // Getting list of free tables id, which are not in the database (not in the listPixBoxTablesIdFromDb) and passing there index to start
+
+                    DisableAddTableBtn();
+                }
+                else
+                    MessageBox.Show(mapSettings.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else
-                MessageBox.Show(mapSettings.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         // Getting sorted list of free tables id, which are not saved in the database (not in the listPixBoxTablesIdFromDb).
@@ -680,14 +686,16 @@ namespace AppDevProject_BookingSystem
         }
 
         // Editing booking
-        private void EditBooking(int selectedRowIndex)
+        private void EditBooking()
         {
+            int rowSelected = dataGridViewBooking.CurrentCell.RowIndex; // Getting an id of the selected row
+
             if (dataGridViewBooking.Rows.Count != 0)
             {
                 // Getting values of the selected row and adding them into list to pass them later into Booking Form
                 List<string> listBookingDetails = new List<string>();
                 foreach (DataGridViewColumn col in dataGridViewBooking.Columns)
-                    listBookingDetails.Add(dataGridViewBooking[col.Index, selectedRowIndex].Value.ToString());
+                    listBookingDetails.Add(dataGridViewBooking[col.Index, rowSelected].Value.ToString());
 
                 PassingBookingParamToEdit(listBookingDetails); // Calling PassingBookingParamToEdit method and passing there booking parameters
             }
@@ -698,7 +706,7 @@ namespace AppDevProject_BookingSystem
         // Getting Booking details using double click on a row and passing them into Booking Form
         private void dataGridViewBooking_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            EditBooking(e.RowIndex);
+            EditBooking();
         }
 
         // Create context menu for PictureBoxes and dataGridViewBooking
@@ -732,7 +740,7 @@ namespace AppDevProject_BookingSystem
         // Context menu "Edit booking"
         private void menuItemEditBooking_Click(object sender, EventArgs e)
         {
-            EditBooking(selectedRowIndex);
+            EditBooking();
         }
 
         // Context menu "Remove booking"
@@ -763,20 +771,30 @@ namespace AppDevProject_BookingSystem
         // Method to remove a booking
         private void RemoveBooking()
         {
-            string tableName = GetTableNameOfSelectedRow(selectedRowIndex);
+            int rowSelected = dataGridViewBooking.CurrentCell.RowIndex;
+            string tableName = GetTableNameOfSelectedRow(rowSelected);
             if (String.IsNullOrEmpty(tableName))
             {
                 MessageBox.Show("Please, select a row to remove!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            bookingDateTime = GetBookingDateTimeOfSelectedRow(selectedRowIndex);
+            bookingDateTime = GetBookingDateTimeOfSelectedRow(rowSelected);
 
             res = MessageBox.Show("Are you sure you want to remove the selected booking?", "Attention", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (res == DialogResult.Yes)
             {
                 int bookingId = GetBookingId(dtBookings, bookingDateTime, tableName);
-                bookingSingleton.booking.DeleteBooking(bookingId);
+
+                if (!bookingSingleton.booking.DeleteBooking(bookingId)) // If deleting was insuccessful
+                {
+                    MessageBox.Show(bookingSingleton.booking.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int customerId = GetCustomerId(dtBookings, bookingDateTime, tableName);
+                customer = new Customers();
+                customer.DeleteCustomer(customerId); // Deleting customer
 
                 MessageBox.Show(bookingSingleton.booking.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ShowBookings();
@@ -802,11 +820,23 @@ namespace AppDevProject_BookingSystem
             }
         }
 
-        // Getting selectedRowIndex of the clicked row
-        private void dataGridViewBooking_CellClick(object sender, DataGridViewCellEventArgs e)
+        // Method to get a customer id (use in RemoveBooking())
+        private int GetCustomerId(DataTable dtSourceTable, DateTime date, string tName)
         {
-            if (e.RowIndex >= 0)
-                selectedRowIndex = e.RowIndex; // Use in menuItemEditBooking_Click() event to pass rowIndex in EditBooking()
+            try
+            {
+                var getCustomerId =
+                    (from table in dtSourceTable.AsEnumerable()
+                     where table.Field<DateTime>("Booking Date") == date && table.Field<string>("Table Name") == tName
+                     select table.Field<int>("Customer ID"));
+
+                return getCustomerId.First();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return 0;
+            }
         }
 
         // Employees button
