@@ -307,6 +307,7 @@
             this.MinimizeBox = false;
             this.Name = "ManageBookings";
             this.Text = "Book a table";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ManageBookings_FormClosed);
             this.Load += new System.EventHandler(this.ManageBookings_Load);
             this.grBoxCustomerInfo.ResumeLayout(false);
             this.grBoxCustomerInfo.PerformLayout();

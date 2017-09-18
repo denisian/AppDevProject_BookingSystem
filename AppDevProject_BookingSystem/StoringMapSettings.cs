@@ -38,7 +38,7 @@ namespace AppDevProject_BookingSystem
                         conn.Open();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
-                            _message = "Settings has been saved succesfully";
+                            _message = "Settings have been saved succesfully";
                             return true;
                         }
                         else
@@ -87,7 +87,7 @@ namespace AppDevProject_BookingSystem
                         }
                         else
                         {
-                            _message = "No settings in database";
+                            _message = "No settings in the database";
                             return false;
                         }
                     }

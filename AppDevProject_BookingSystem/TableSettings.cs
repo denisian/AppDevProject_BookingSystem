@@ -24,6 +24,8 @@ namespace AppDevProject_BookingSystem
 
         private void TableSettings_Load(object sender, EventArgs e)
         {
+            Globals.tableSettingsChanged = false;
+
             GettingValuesForNumericsUpDown();
             
             // Checking which event triggered opening TableSettings Form. In this case - Edit table button
@@ -71,20 +73,22 @@ namespace AppDevProject_BookingSystem
             string checkTableInfo = table.CheckTableInfo();
             if (!String.IsNullOrEmpty(checkTableInfo))
             {
-                MessageBox.Show(table.Message);
+                MessageBox.Show(table.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             bool addResult = table.AddTable();
             if (!addResult)
             {
-                MessageBox.Show(table.Message);
+                MessageBox.Show(table.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            MessageBox.Show(table.Message);
+            MessageBox.Show(table.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             Globals.TableNameSelected = txtTableName.Text; // Passing table name to Globals in order to select it in ManageTables
+            Globals.tableSettingsChanged = true; // If there were table changes, calling Retrieving in ConfigSystem() class
+
             // After successfull updating, loading tables data again
             mngTable.LoadTablesData();
 
@@ -101,7 +105,7 @@ namespace AppDevProject_BookingSystem
             string checkTableInfo = table.CheckTableInfo();
             if (!String.IsNullOrEmpty(checkTableInfo))
             {
-                MessageBox.Show(table.Message);
+                MessageBox.Show(table.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 if (checkTableInfo == "wrongName") // If Table name is empty, passing back its old name
                     txtTableName.Text = tableName;
                 txtTableName.Focus();
@@ -113,16 +117,18 @@ namespace AppDevProject_BookingSystem
             bool updResult = table.UpdateTable(Convert.ToInt32(Globals.listTableSelectedSettings[0]));
             if (!updResult)
             {
-                MessageBox.Show(table.Message);
+                MessageBox.Show(table.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtTableName.Text = tableName;
                 txtTableName.Focus();
                 txtTableName.SelectAll();
                 return;
             }
 
-            MessageBox.Show(table.Message);
+            MessageBox.Show(table.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             Globals.TableNameSelected = txtTableName.Text; // Passing table name to Globals in order to select it in ManageTables
+            Globals.tableSettingsChanged = true; // If there were table changes, calling Retrieving in ConfigSystem() class
+
             // After successfull updating, loading tables data again
             mngTable.LoadTablesData();
 

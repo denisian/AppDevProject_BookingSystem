@@ -120,6 +120,7 @@
             this.MinimumSize = new System.Drawing.Size(452, 356);
             this.Name = "ManageTables";
             this.Text = "Tables";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ManageTables_FormClosed);
             this.Load += new System.EventHandler(this.ManageTables_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTables)).EndInit();
             this.ResumeLayout(false);

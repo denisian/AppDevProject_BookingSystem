@@ -55,6 +55,8 @@ namespace AppDevProject_BookingSystem
             }
 
             dataGridViewTables.Rows[rowNumber].Selected = true;
+
+            dataGridViewTables_CellClick(dataGridViewTables, new DataGridViewCellEventArgs(0, rowNumber)); // Getting an id of the selected row
         }
 
         // Setting accessibility of form' controls depending on an access level
@@ -139,8 +141,10 @@ namespace AppDevProject_BookingSystem
             if (res == DialogResult.Yes)
             {
                 table.DeleteTable(tableId);
-                MessageBox.Show(table.Message);
+                MessageBox.Show(table.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadTablesData();
+
+                Globals.tableSettingsChanged = true; // If there were table changes, calling Retrieving in ConfigSystem() class
             }
         }
 
@@ -188,6 +192,13 @@ namespace AppDevProject_BookingSystem
         {
             if (e.Button == MouseButtons.Right)
                 dataGridViewTables.ContextMenuStrip = contxtMenuTable;
+        }
+
+        // Retrieving updated table data after changing table settings
+        private void ManageTables_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (Globals.tableSettingsChanged)
+                mngBookings.RetrievingTableMapFromDatabase();
         }
     }
 }

@@ -133,7 +133,7 @@ namespace AppDevProject_BookingSystem
             if (res == DialogResult.Yes)
             {
                 employee.DeleteEmployee(_employeeId);
-                MessageBox.Show(employee.Message);
+                MessageBox.Show(employee.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadEmployeesData();
             }
         }

@@ -135,7 +135,7 @@ namespace AppDevProject_BookingSystem
             string checkEmployeeInfo = employee.CheckEmployeeInfo();
             if (!String.IsNullOrEmpty(checkEmployeeInfo))
             {
-                MessageBox.Show(employee.Message);
+                MessageBox.Show(employee.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -145,7 +145,7 @@ namespace AppDevProject_BookingSystem
             bool addResult = employee.AddEmployee();
             if (!addResult)
             {
-                MessageBox.Show(employee.Message);
+                MessageBox.Show(employee.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtEmail.Text = email;
                 txtEmail.Focus();
                 txtEmail.SelectAll();
@@ -172,7 +172,7 @@ namespace AppDevProject_BookingSystem
             string checkEmployeeInfo = employee.CheckEmployeeInfo();
             if (!String.IsNullOrEmpty(checkEmployeeInfo))
             {
-                MessageBox.Show(employee.Message);
+                MessageBox.Show(employee.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 if (checkEmployeeInfo == "wrongFirstName") // If first name is empty, passing back its old name
                 {
@@ -196,7 +196,7 @@ namespace AppDevProject_BookingSystem
             bool updResult = employee.UpdateEmployee(employeeId);
             if (!updResult)
             {
-                MessageBox.Show(employee.Message);
+                MessageBox.Show(employee.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtEmail.Text = email;
                 txtEmail.Focus();
                 txtEmail.SelectAll();
@@ -234,7 +234,7 @@ namespace AppDevProject_BookingSystem
             // Sending recipient's email and MailMessage settings
             emailSettings.SmtpClient(txtEmail.Text, mailMessage);
 
-            MessageBox.Show(emailSettings.Message);
+            MessageBox.Show(emailSettings.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // Press OK button

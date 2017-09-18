@@ -5,8 +5,7 @@ using System.Text.RegularExpressions;
 namespace AppDevProject_BookingSystem
 {
     /// <summary>
-    /// Class for authorisation on the web-site for customers and employees
-    /// Uses in LoginPage and LoginBookingPage modules
+    /// Class for authorisation to the main form for the restaurant staff
     /// </summary>
     public class Authorisation
     {

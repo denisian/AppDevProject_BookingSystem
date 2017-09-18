@@ -23,5 +23,8 @@ namespace AppDevProject_BookingSystem
         // If it was clicking on the Add Table button - open TableSettings Form with default parameters
         // Otherwise, if it was Edit Table button pressing - open TableSettings Form with substitution Table parameters
         public static bool TableSettingsClickEventFlag { get; set; }
+
+        // Monitor whether there were changes in the settings of the tables (in TableSettings()) to call Retrieveing data from ConfigSystem() class
+        public static bool tableSettingsChanged;
     }
 }

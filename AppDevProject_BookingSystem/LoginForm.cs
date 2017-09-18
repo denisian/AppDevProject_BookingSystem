@@ -36,7 +36,7 @@ namespace AppDevProject_BookingSystem
                 this.Hide();
             }
             else
-                MessageBox.Show(authorisation.Message);
+                MessageBox.Show(authorisation.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void LoginForm_Load(object sender, EventArgs e)

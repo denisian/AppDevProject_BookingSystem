@@ -218,7 +218,11 @@ namespace AppDevProject_BookingSystem
                 }
                 catch (SqlException e)
                 {
-                    _message = e.Message;
+                    if (e.ErrorCode == -2146232060)
+                        _message = "This table has been booked and cannot be deleted.\nTo delete this table, you must either change the booking of this table to another table, or delete the booking itself.";
+                    else
+                        _message = e.Message;
+                    
                 }
                 finally
                 {

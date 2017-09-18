@@ -31,6 +31,8 @@ namespace AppDevProject_BookingSystem
         private string bookingPartySizeToUpdate;
         private string bookingTableNameToUpdate;
 
+        // If there were table changes, calling Retrieving in ConfigSystem() class
+
         private bool ifBtnCheckAvailabilityPressed = false;
 
         private DialogResult res;
@@ -148,7 +150,7 @@ namespace AppDevProject_BookingSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -181,7 +183,10 @@ namespace AppDevProject_BookingSystem
                 MainBookingParametersChanged(); // Change visibility of forms' controls
             }
             else
-                MessageBox.Show(bookData.Item3.ToString()); // Error message
+            {
+                MessageBox.Show(bookData.Item3.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                linkLblTable.Text = "";
+            }
         }
 
         // Initialisation customer info
@@ -238,7 +243,7 @@ namespace AppDevProject_BookingSystem
             // Sending recipient's email and MailMessage settings
             emailSettings.SmtpClient(txtEmail.Text, mailMessage);
 
-            MessageBox.Show(emailSettings.Message);
+            MessageBox.Show(emailSettings.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // Book/Update button
@@ -253,7 +258,7 @@ namespace AppDevProject_BookingSystem
                 string checkCustomerInfo = customer.CheckCustomerInfo();
                 if (!String.IsNullOrEmpty(checkCustomerInfo))
                 {
-                    MessageBox.Show(customer.Message);
+                    MessageBox.Show(customer.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     if (checkCustomerInfo == "wrongName")
                     {
@@ -280,7 +285,7 @@ namespace AppDevProject_BookingSystem
                 // If metod returned false, showing a message
                 if (!bookingSingleton.booking.CheckBookingInfo())
                 {
-                    MessageBox.Show(bookingSingleton.booking.Message);
+                    MessageBox.Show(bookingSingleton.booking.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -304,7 +309,7 @@ namespace AppDevProject_BookingSystem
                     bool updResult = bookingSingleton.booking.UpdateBooking(bookingId);
                     if (!updResult)
                     {
-                        MessageBox.Show(bookingSingleton.booking.Message);
+                        MessageBox.Show(bookingSingleton.booking.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
 
@@ -314,7 +319,7 @@ namespace AppDevProject_BookingSystem
                     string message = bookingSingleton.booking.Message;
 
                     if (String.IsNullOrEmpty(txtEmail.Text.Trim())) // If there is not an email, don't send confirmation email
-                        MessageBox.Show(message);
+                        MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     else
                     {
                         res = MessageBox.Show(String.Format(message + "\nDo you want to send a confirmation email to '{0}'?", txtEmail.Text), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -331,7 +336,7 @@ namespace AppDevProject_BookingSystem
                         // Add there are no problems, add a customer
                         if (!customer.AddCustomer())
                         {
-                            MessageBox.Show(customer.Message);
+                            MessageBox.Show(customer.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
@@ -343,7 +348,7 @@ namespace AppDevProject_BookingSystem
                             string message = bookingSingleton.booking.Message;
 
                             if (String.IsNullOrEmpty(txtEmail.Text.Trim())) // If there is not an email, don't send confirmation email
-                                MessageBox.Show(message);
+                                MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             else
                             {
                                 res = MessageBox.Show(String.Format(message + "\nDo you want to send a confirmation email to '{0}'?", txtEmail.Text), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -356,11 +361,11 @@ namespace AppDevProject_BookingSystem
                         else
                         {
                             customer.DeleteCustomer(); // If booking adding has been unsuccessfull, deleting customer
-                            MessageBox.Show(bookingSingleton.booking.Message);
+                            MessageBox.Show(bookingSingleton.booking.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                     else
-                        MessageBox.Show("Table is unavailable. Please try to choose another date or time");
+                        MessageBox.Show("Table is unavailable. Please try to choose another date or time", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 // Calling the LoadBookingsData method (button click) of the ConfigSystem form to reload data
@@ -369,7 +374,7 @@ namespace AppDevProject_BookingSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -480,7 +485,8 @@ namespace AppDevProject_BookingSystem
 
         private void linkLblTable_TextChanged(object sender, EventArgs e)
         {
-            MainBookingParametersChanged();
+            if (linkLblTable.Text != "")
+                MainBookingParametersChanged();
         }
 
         private void txtTitle_Enter(object sender, EventArgs e)
@@ -511,6 +517,22 @@ namespace AppDevProject_BookingSystem
         private void txtNotes_Enter(object sender, EventArgs e)
         {
             txtNotes.SelectAll();
+        }
+
+        // Retrieving updated table data after changing table settings
+        public void RetrievingTableMapFromDatabase()
+        {
+            if (Globals.tableSettingsChanged)
+            {
+                confSystem.RetrievingTableMapFromDatabase(1);
+                confSystem.ShowBookings();
+                Globals.tableSettingsChanged = false;
+            }
+        }
+
+        private void ManageBookings_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            RetrievingTableMapFromDatabase();
         }
     }
 

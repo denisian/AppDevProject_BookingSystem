@@ -61,8 +61,6 @@ namespace AppDevProject_BookingSystem
 
             RetrievingTableMapFromDatabase(restaurantId);
 
-            DisableAddTableBtn();
-
             // Create an instance of Booking Class using Singleton pattern (to use the same instance between ConfigSystem and ManageBookings classes)
             // It is necessary because I need to use the same data of Datatable in Booking Class between classes
             bookingSingleton = Singleton.GetInstance();
@@ -190,7 +188,7 @@ namespace AppDevProject_BookingSystem
             string mapConfig = GetTableMapParameters();
 
             if (mapSettings.SavingTableMap(restaurantId, mapImage, mapConfig)) // If saving was successful
-                MessageBox.Show(mapSettings.Message);
+                MessageBox.Show(mapSettings.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // Getting Table names by their ID when retrieving table data from database (using in CreatePictureBox to create new tables on a map using tableId from the database)
@@ -207,7 +205,7 @@ namespace AppDevProject_BookingSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return "";
             }
         }
@@ -224,7 +222,7 @@ namespace AppDevProject_BookingSystem
         }
 
         // Retrieving form size, table id and table location from the database
-        // Making this method private to use it in the ManageTables and TableSettings classes to reload the map after updating tables
+        // Making this method private to use it in the ManageBookings and ManageTables class to reload the map after updating tables
         public void RetrievingTableMapFromDatabase(byte restaurantId)
         {
             GetTablesData();
@@ -272,9 +270,11 @@ namespace AppDevProject_BookingSystem
                     }
                 }
                 GettingFreeTablesIdToAdd(dimPicBoxTableOnMap); // Getting list of free tables id, which are not in the database (not in the listPixBoxTablesIdFromDb) and passing there index to start
+
+                DisableAddTableBtn();
             }
             else
-                MessageBox.Show(mapSettings.Message);
+                MessageBox.Show(mapSettings.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // Getting sorted list of free tables id, which are not saved in the database (not in the listPixBoxTablesIdFromDb).
@@ -364,6 +364,8 @@ namespace AppDevProject_BookingSystem
             // If there are no tables in the listPixBoxTablesIdFree and listRemovedTables lists, making btnAddTable disable
             if (listPixBoxTablesIdFree.Count == 0 && listPicBoxRemovedTables.Count == 0)
                 btnAddTable.Enabled = false;
+            else
+                btnAddTable.Enabled = true;
         }
 
         // Button "Add table"
@@ -431,55 +433,44 @@ namespace AppDevProject_BookingSystem
         {
             try
             {
-                string dateBooking = datePickerBooking.Value.Date.ToString("dd/MM/yyyy");
-                string timeBooking = cmbTimeBooking.SelectedItem.ToString();
                 string tableName = GetTableNameById(Convert.ToInt32(picBoxTableAdded[indPicBox].Name));
 
-                if (timeBooking != "Any" && !cbAnytimeBooking.Checked)
-                {
-                    LoadBookingsData(dateBooking, timeBooking); // Loading booking data to pass them later in ManageBookings
-
-                    if (dtBookings.Rows.Count == 0) // If there are no data in dtBookings (no bookings at this date/time), making New booking
-                    {
-                        // Set global variable to false and open Booking Form without substitution of booking parameters
-                        Globals.ConfigSystemClickEventFlag = false;
-                        ShowBookingForm();
-                        return;
-                    }
-
-                    DateTime fullBookingDate = Convert.ToDateTime(datePickerBooking.Value.ToShortDateString() + " " + timeBooking);
-
-                    var getPartySize =
-                        (from table in dtBookings.AsEnumerable()
-                         where table.Field<DateTime>("Booking Date") == fullBookingDate && table.Field<string>("Table Name") == tableName
-                         select table.Field<byte>("Party Size")).FirstOrDefault();
-
-                    if (getPartySize == 0) // If query doesn't return data
-                    {
-                        // Set global variable to false and open Booking Form without substitution of booking parameters
-                        Globals.ConfigSystemClickEventFlag = false;
-                        ShowBookingForm();
-                        return;
-                    }
-
-                    // Getting values of the selected row and adding them into list to pass them later into Booking Form
-                    List<string> listBookingDetails = new List<string>();
-                    listBookingDetails.Add(dateBooking + " " + timeBooking);
-                    listBookingDetails.Add(getPartySize.ToString());
-                    listBookingDetails.Add(tableName);
-
-                    PassingBookingParamToEdit(listBookingDetails); // Calling PassingBookingParamToEdit method and passing there booking parameters
-                }
-                else
+                // If there are no data in dtBookings (no bookings at this date/time), making New booking
+                if (!SameBookingDateTime())
                 {
                     // Set global variable to false and open Booking Form without substitution of booking parameters
                     Globals.ConfigSystemClickEventFlag = false;
                     ShowBookingForm();
+                    return;
                 }
+
+                string dateTime = dtBookings.Rows[0]["Booking Date"].ToString();
+                DateTime fullBookingDate = Convert.ToDateTime(dateTime);
+
+                var getPartySize =
+                    (from table in dtBookings.AsEnumerable()
+                     where table.Field<DateTime>("Booking Date") == fullBookingDate && table.Field<string>("Table Name") == tableName
+                     select table.Field<byte>("Party Size")).FirstOrDefault();
+
+                if (getPartySize == 0) // If query doesn't return data
+                {
+                    // Set global variable to false and open Booking Form without substitution of booking parameters
+                    Globals.ConfigSystemClickEventFlag = false;
+                    ShowBookingForm();
+                    return;
+                }
+
+                // Getting values of the selected row and adding them into list to pass them later into Booking Form
+                List<string> listBookingDetails = new List<string>();
+                listBookingDetails.Add(dateTime);
+                listBookingDetails.Add(getPartySize.ToString());
+                listBookingDetails.Add(tableName);
+
+                PassingBookingParamToEdit(listBookingDetails); // Calling PassingBookingParamToEdit method and passing there booking parameters
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -504,6 +495,7 @@ namespace AppDevProject_BookingSystem
         private void btnSaveTableMap_Click(object sender, EventArgs e)
         {
             SavingTableMapToDatabase();
+            ShowBookings();
         }
 
         private void ColorFillBusyTables(bool makeFill)
@@ -533,7 +525,7 @@ namespace AppDevProject_BookingSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -564,22 +556,26 @@ namespace AppDevProject_BookingSystem
                 column.Width = 130;
             }
 
-            // If all bookings in tha datatable have the same date and time, fill tables
-            bool fillTables = true;
+            if ((dateBooking != "" && cmbTimeBooking.Text != "Any") || SameBookingDateTime()) // If there is a chosen data and time OR all bookings at the same date+time, fill picture boxes
+                ColorFillBusyTables(true);
+            else
+                ColorFillBusyTables(false);
+        }
+
+        // Checking if all bookings in the datatable have the same date and time
+        private bool SameBookingDateTime()
+        {
+            bool sameDateTime = true;
             if (dtBookings.Rows.Count == 0)
-                fillTables = false;
+                sameDateTime = false;
             else
             {
                 string dtRow = dtBookings.Rows[0]["Booking Date"].ToString();
                 foreach (DataRow row in dtBookings.Rows)
                     if (row["Booking Date"].ToString() != dtRow)
-                        fillTables = false;
+                        sameDateTime = false;
             }
-
-            if ((dateBooking != "" && cmbTimeBooking.Text != "Any") || fillTables) // If there is a chosen data and time OR all bookings ate the same date+time, fill picture boxes
-                ColorFillBusyTables(true);
-            else
-                ColorFillBusyTables(false);
+            return sameDateTime;
         }
 
         // Loading the list of time bookings from Bookings class
@@ -599,7 +595,8 @@ namespace AppDevProject_BookingSystem
         }
 
         // Method to load booking for the whole or certain period
-        private void ShowBookings()
+        // Making this method private to use it in the ManageBookings and ManageTables class to reload the map after updating tables
+        public void ShowBookings()
         {
             // If pressed Checkbox "Anytime", loading all bookings
             if (cbAnytimeBooking.Checked)
@@ -690,7 +687,7 @@ namespace AppDevProject_BookingSystem
                 PassingBookingParamToEdit(listBookingDetails); // Calling PassingBookingParamToEdit method and passing there booking parameters
             }
             else
-                MessageBox.Show("Please, select a row to edit!");
+                MessageBox.Show("Please, select a row to edit!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         // Getting Booking details using double click on a row and passing them into Booking Form
@@ -760,7 +757,7 @@ namespace AppDevProject_BookingSystem
             string tableName = GetTableNameOfSelectedRow(selectedRowIndex);
             if (String.IsNullOrEmpty(tableName))
             {
-                MessageBox.Show("Please, select a row to remove!");
+                MessageBox.Show("Please, select a row to remove!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -772,7 +769,7 @@ namespace AppDevProject_BookingSystem
                 int bookingId = GetBookingId(dtBookings, bookingDateTime, tableName);
                 bookingSingleton.booking.DeleteBooking(bookingId);
 
-                MessageBox.Show(bookingSingleton.booking.Message);
+                MessageBox.Show(bookingSingleton.booking.Message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ShowBookings();
             }
         }
@@ -790,7 +787,7 @@ namespace AppDevProject_BookingSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return 0;
             }
         }
