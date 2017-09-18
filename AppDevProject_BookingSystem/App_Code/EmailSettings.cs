@@ -5,7 +5,8 @@ using System.Net.Mail;
 namespace AppDevProject_BookingSystem
 {
     /// <summary>
-    /// Class to set up Email settings for confirmation bookings, registration accounts and sending form from the main page
+    /// Class to set up Email settings
+    /// (с) Developed by Denis Klyucherov and Konstantin Khvan
     /// </summary>
     public class EmailSettings
     {

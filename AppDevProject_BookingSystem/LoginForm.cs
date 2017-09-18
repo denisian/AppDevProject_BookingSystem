@@ -1,10 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Login Form
+    /// After successfull login, redirect to ConfigSystem Form
+    /// (c) Developed by Denis Klyucherov and Yevgeniy Stenyushkin
+    /// </summary>
     public partial class LoginForm : Form
     {
         Authorisation authorisation;
@@ -79,36 +83,42 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Login button
         private void btnLogin_Click(object sender, EventArgs e)
         {
             LoginInSystem();
         }
 
+        // Selecting all text in the txtEmail after entering to the control
         private void txtEmail_Enter(object sender, EventArgs e)
         {
             txtEmail.SelectAll();
         }
 
+        // Selecting all text in the txtPassword after entering to the control
         private void txtPassword_Enter(object sender, EventArgs e)
         {
             txtPassword.SelectAll();
         }
 
-        private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Application.Exit();
-        }
-
+        // Submit after a user pressed the Enter button in the txtEmail
         private void txtEmail_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 LoginInSystem();
         }
 
+        // Submit after a user pressed the Enter button in the txtPassword
         private void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 LoginInSystem();
+        }
+
+        // Stop application processes after form is closed
+        private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

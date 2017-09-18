@@ -6,6 +6,7 @@ namespace AppDevProject_BookingSystem
 {
     /// <summary>
     /// Class for managing customers in the Staff account, Registration and booking tables
+    /// (c) Developed by Denis Klyucherov
     /// </summary>
     public class Customers
     {
@@ -64,8 +65,7 @@ namespace AppDevProject_BookingSystem
         }
 
         /// <summary>
-        /// Method for adding customers after Registration and after booking a table
-        /// At the first step we check if Customer or Employee is already registered in database (because we keep their credential in separate tables)
+        /// Method for adding customers after booking a table
         /// OUTPUT: false - one of the fields is incorrect
         ///         true - customer has been added
         /// </summary>

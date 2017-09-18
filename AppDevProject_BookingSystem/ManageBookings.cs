@@ -9,6 +9,7 @@ namespace AppDevProject_BookingSystem
 {
     /// <summary>
     /// Module for managing bookings and checking availability tables
+    /// (c) Developed by Denis Klyucherov
     /// </summary>
     public partial class ManageBookings : Form
     {
@@ -72,6 +73,7 @@ namespace AppDevProject_BookingSystem
             customer = new Customers();
         }
 
+        //Loading Booking form
         private void LoadBookingTimeSizeOccasion()
         {
             // Preventing SelectedValueChanged events when DataSource is bound
@@ -378,6 +380,7 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Clicking on the table
         private void linkLblTable_Click(object sender, EventArgs e)
         {
             // Open form when table is displayed (when New Booking creates)
@@ -468,52 +471,62 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Changing visibility of the Custimer info group box and other controls after changing date
         private void datePickerBooking_ValueChanged(object sender, EventArgs e)
         {
             MainBookingParametersChanged();
         }
 
+        // Changing visibility of the Custimer info group box and other controls after changing time
         private void cmbTimeBooking_SelectedValueChanged(object sender, EventArgs e)
         {
             MainBookingParametersChanged();
         }
 
+        // Changing visibility of the Custimer info group box and other controls after changing Party Size
         private void cmbSizeBooking_SelectedValueChanged(object sender, EventArgs e)
         {
             MainBookingParametersChanged();
         }
 
+        // Changing visibility of the Custimer info group box and other controls after changing table
         private void linkLblTable_TextChanged(object sender, EventArgs e)
         {
             if (linkLblTable.Text != "")
                 MainBookingParametersChanged();
         }
 
+        // Selecting all text in the txtTitle after entering to the control
         private void txtTitle_Enter(object sender, EventArgs e)
         {
             txtTitle.SelectAll();
         }
 
+        // Selecting all text in the txtFirstName after entering to the control
         private void txtFirstName_Enter(object sender, EventArgs e)
         {
             txtFirstName.SelectAll();
         }
 
+        // Selecting all text in the txtLastName after entering to the control
         private void txtLastName_Enter(object sender, EventArgs e)
         {
             txtLastName.SelectAll();
         }
 
+        // Selecting all text in the txtPhone after entering to the control
         private void txtPhone_Enter(object sender, EventArgs e)
         {
             txtPhone.SelectAll();
         }
 
+        // Selecting all text in the txtEmail after entering to the control
         private void txtEmail_Enter(object sender, EventArgs e)
         {
             txtEmail.SelectAll();
         }
 
+        // Selecting all text in the txtNotes after entering to the control
         private void txtNotes_Enter(object sender, EventArgs e)
         {
             txtNotes.SelectAll();
@@ -530,10 +543,10 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Retrieving data after form closed
         private void ManageBookings_FormClosed(object sender, FormClosedEventArgs e)
         {
             RetrievingTableMapFromDatabase();
         }
     }
-
 }

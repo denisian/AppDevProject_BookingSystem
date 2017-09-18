@@ -4,6 +4,10 @@ using System.Windows.Forms;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Form for managing empoloyees in the dataGridView control
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     public partial class ManageEmployees : Form
     {
         Employees employee;
@@ -65,6 +69,7 @@ namespace AppDevProject_BookingSystem
             emplForm.ShowDialog();
         }
 
+        // Open TableSettings form after double-clicking
         private void dataGridViewUsers_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             EditEmployeeSettings(e.RowIndex);
@@ -80,6 +85,7 @@ namespace AppDevProject_BookingSystem
             LoadEmployeeSettingsForm();
         }
 
+        // Add button
         private void btnAddEmployee_Click(object sender, EventArgs e)
         {
             AddEmployee();
@@ -98,6 +104,7 @@ namespace AppDevProject_BookingSystem
             return row.Cells["First Name"].Value + " " + row.Cells["Last Name"].Value;
         }
 
+        // Edit employee method
         private void EditEmployeeSettings(int selectedRowIndex)
         {
             // Set the value of the variable to remeber which event triggered opening EmployeeSettings Form (in this case - Edit)
@@ -105,22 +112,22 @@ namespace AppDevProject_BookingSystem
 
             // Getting Employee ID of the selected row and pass it later into EmployeeSettings Form
             _employeeId = GetEmployeeIDOfSelectedRow(selectedRowIndex);
-            //_employeeId = Convert.ToInt32(dataGridViewEmployees["ID", selectedRowIndex].Value.ToString());
 
             // Starting Employee Settings Form
             LoadEmployeeSettingsForm();
         }
 
+        // Edit button
         private void btnEditEmployee_Click(object sender, EventArgs e)
         {
             EditEmployeeSettings(selectedRowIndex);
         }
 
+        // Saving row index after clicking on it
         private void dataGridViewEmployees_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
                 selectedRowIndex = e.RowIndex; // Use in btnEditEmployee_Click() event to pass rowIndex in EditEmployeeSettings()
-                //_employeeId = (Int32)row.Cells["ID"].Value; // Use in RemoveEmployee to find out the ID of an employee
         }
 
         // Removing employee
@@ -138,6 +145,7 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Remove button
         private void btnRemoveEmployee_Click(object sender, EventArgs e)
         {
             RemoveEmployee();
@@ -159,16 +167,19 @@ namespace AppDevProject_BookingSystem
             contxtMenuEmployee.Items.Add(menuItemRemoveEmployee);
         }
 
+        // Context menu "Edit employee"
         private void menuItemEditEmployee_Click(object sender, EventArgs e)
         {
             EditEmployeeSettings(selectedRowIndex);
         }
 
+        // Context menu "Remove employee"
         private void menuItemRemoveEmployee_Click(object sender, EventArgs e)
         {
             RemoveEmployee();
         }
 
+        // Show context menu
         private void dataGridViewEmployees_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)

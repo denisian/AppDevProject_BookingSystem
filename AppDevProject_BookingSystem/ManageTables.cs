@@ -4,6 +4,10 @@ using System.Windows.Forms;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Form for managing tables in the dataGridView control
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     public partial class ManageTables : Form
     {
         Tables table;
@@ -102,11 +106,13 @@ namespace AppDevProject_BookingSystem
             LoadTableSettingsForm();
         }
 
+        // Add button
         private void btnAddTable_Click(object sender, EventArgs e)
         {
             AddTable();
         }
 
+        // Method to edit table settings
         private void EditTableSettings(int selectedRowIndex)
         {
             // Set the value of the global variable to remeber which event triggered opening TableSettings Form (in this case - Edit)
@@ -124,11 +130,13 @@ namespace AppDevProject_BookingSystem
             LoadTableSettingsForm();
         }
 
+        // Show TableSettings form after double-clicking
         private void dataGridViewTables_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             EditTableSettings(e.RowIndex);
         }
 
+        // Edit table button
         private void btnEditTable_Click(object sender, EventArgs e)
         {
             EditTableSettings(selectedRowIndex);
@@ -148,11 +156,13 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Remove table button
         private void btnRemoveTable_Click(object sender, EventArgs e)
         {
             RemoveTable();
         }
 
+        // Ok button
         private void btnOk_Click(object sender, EventArgs e)
         {
             Globals.TableNameSelected = tableName;
@@ -178,16 +188,19 @@ namespace AppDevProject_BookingSystem
             contxtMenuTable.Items.Add(menuItemRemoveTable);
         }
 
+        // Context menu "Edit table"
         private void menuItemEditTable_Click(object sender, EventArgs e)
         {
             EditTableSettings(selectedRowIndex);
         }
 
+        // Context menu "Remove table"
         private void menuItemRemoveTable_Click(object sender, EventArgs e)
         {
             RemoveTable();
         }
 
+        // Show context menu
         private void dataGridViewTables_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)

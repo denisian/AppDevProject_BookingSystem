@@ -10,6 +10,11 @@ using System.Windows.Forms;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Configuration and the most important module of the system
+    /// Module to configure a table map, allocate tables on it, load and manage bookings
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     public partial class ConfigSystem : Form
     {
         private OpenFileDialog dlgTablesMap;
@@ -124,6 +129,7 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        #region START IMAGE (TABLE MAP) SECTION
         private void ShowMyImage(String fileToDisplay)
         {
             // Sets up an image object to be displayed.
@@ -138,6 +144,7 @@ namespace AppDevProject_BookingSystem
             pnlTables.BackgroundImage = (Image)MyImage;
         }
 
+        // Open map button
         private void OpenImage_Click(object sender, EventArgs e)
         {
             dlgTablesMap.Filter = "Image files (*.jpg,*.jpeg,*.png,*.bmp)|*.jpg;*.jpeg;*.png;*.bmp|JPG (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|BMP (*.bmp)|*.bmp";
@@ -151,6 +158,7 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Converting an image file to binary to save it in the database
         private byte[] ConvertImageToBinary()
         {
             if (pnlTables.BackgroundImage != null)
@@ -359,6 +367,7 @@ namespace AppDevProject_BookingSystem
             DisableAddTableBtn();
         }
 
+        // Disabling Add table button after adding of the whole tables from tha database
         private void DisableAddTableBtn()
         {
             // If there are no tables in the listPixBoxTablesIdFree and listRemovedTables lists, making btnAddTable disable
@@ -410,17 +419,10 @@ namespace AppDevProject_BookingSystem
             location = Point.Empty;
         }
 
+        // Mouse clicking event on a table. Saving the table id to remove
         private void picBox_MouseClick(object sender, MouseEventArgs e, int indPicBox)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                //if ((Color)picBoxTableAdded[indPicBox].Tag == Color.Red)
-                //    picBoxTableAdded[indPicBox].Tag = Color.Blue;
-                //else
-                //    picBoxTableAdded[indPicBox].Tag = Color.Red;
-                //picBoxTableAdded[indPicBox].Refresh();
-            }
-            else  if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 picBoxTableAdded[indPicBox].ContextMenuStrip = contxtMenuTables;
                 indexRemovedTable = indPicBox; // Save removed table index to pass it to RemovePictureBox()
@@ -474,6 +476,7 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Drawing the picture box table
         private void picBox_Paint(object sender, PaintEventArgs e, int indPicBox, string tableName)
         {
             Font myFont = new Font("Arial", 12, FontStyle.Bold);
@@ -492,12 +495,14 @@ namespace AppDevProject_BookingSystem
             ControlPaint.DrawBorder(e.Graphics, picBoxTableAdded[indPicBox].ClientRectangle, (Color)picBoxTableAdded[indPicBox].Tag, ButtonBorderStyle.Solid);
         }
 
+        // Save map button
         private void btnSaveTableMap_Click(object sender, EventArgs e)
         {
             SavingTableMapToDatabase();
             ShowBookings();
         }
 
+        // Colouring the picture box depending on if table is free or not
         private void ColorFillBusyTables(bool makeFill)
         {
             try
@@ -528,8 +533,7 @@ namespace AppDevProject_BookingSystem
                 MessageBox.Show(ex.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
-        //============================================ END PICTURES SECTION =========================
+        #endregion
 
         // Loading booking data from table Bookings
         // Method is public because we use it in ManageBookings.cs to reload data after adding or updating a booking
@@ -675,6 +679,7 @@ namespace AppDevProject_BookingSystem
             ShowBookingForm();
         }
 
+        // Editing booking
         private void EditBooking(int selectedRowIndex)
         {
             if (dataGridViewBooking.Rows.Count != 0)
@@ -718,16 +723,19 @@ namespace AppDevProject_BookingSystem
             contxtMenuBookings.Items.Add(menuItemRemoveBooking);
         }
 
+        // Context menu "Remove table"
         private void menuItemRemoveTable_Click(object sender, EventArgs e)
         {
             RemovePicBoxTable();
         }
 
+        // Context menu "Edit booking"
         private void menuItemEditBooking_Click(object sender, EventArgs e)
         {
             EditBooking(selectedRowIndex);
         }
 
+        // Context menu "Remove booking"
         private void menuItemRemoveBooking_Click(object sender, EventArgs e)
         {
             RemoveBooking();
@@ -752,6 +760,7 @@ namespace AppDevProject_BookingSystem
             return Convert.ToDateTime(row.Cells["Booking Date"].Value.ToString());
         }
 
+        // Method to remove a booking
         private void RemoveBooking()
         {
             string tableName = GetTableNameOfSelectedRow(selectedRowIndex);
@@ -774,6 +783,7 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        // Method to get a booking id (use in RemoveBooking())
         private int GetBookingId(DataTable dtSourceTable, DateTime date, string tName)
         {
             try
@@ -799,6 +809,7 @@ namespace AppDevProject_BookingSystem
                 selectedRowIndex = e.RowIndex; // Use in menuItemEditBooking_Click() event to pass rowIndex in EditBooking()
         }
 
+        // Employees button
         private void btnManageUsers_Click(object sender, EventArgs e)
         {
             ManageEmployees tblForm = new ManageEmployees();
@@ -806,12 +817,14 @@ namespace AppDevProject_BookingSystem
             tblForm.ShowDialog();
         }
 
+        // Reload map button
         private void btnReloadMap_Click(object sender, EventArgs e)
         {
             RetrievingTableMapFromDatabase(restaurantId);
             ShowBookings();
         }
 
+        // Click event to show context menu for a booking
         private void dataGridViewBooking_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -819,6 +832,7 @@ namespace AppDevProject_BookingSystem
                     dataGridViewBooking.ContextMenuStrip = contxtMenuBookings;
         }
 
+        // Logout button
         private void btnExit_Click(object sender, EventArgs e)
         {
             LoginForm loginForm = new LoginForm();
@@ -827,6 +841,7 @@ namespace AppDevProject_BookingSystem
             this.Hide();
         }
 
+        // Exit form application after form is closed
         private void ConfigSystem_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();

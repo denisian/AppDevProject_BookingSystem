@@ -4,7 +4,8 @@ using System.Data.SqlClient;
 namespace AppDevProject_BookingSystem
 {
     /// <summary>
-    /// Class for managing tables in the Staff account (request, update, delete)
+    /// Class for managing tables (request, update, delete)
+    /// (c) Developed by Denis Klyucherov, Yevgeniy Stenyushkin and Konstatntin Khvan
     /// </summary>
     public class Tables
     {
@@ -25,7 +26,7 @@ namespace AppDevProject_BookingSystem
         public string Message { get { return _message; } }
 
         /// <summary>
-        /// Checking if field Occasion is correct (in the Web Application user can leave the field empty)
+        /// Checking table parameters
         /// </summary>
         /// <returns></returns>
         public string CheckTableInfo()
@@ -45,6 +46,9 @@ namespace AppDevProject_BookingSystem
             return "";
         }
 
+        /// <summary>
+        /// Loading tables
+        /// </summary>
         public void ShowTables()
         {
             using (conn = new SqlConnection(connStr))

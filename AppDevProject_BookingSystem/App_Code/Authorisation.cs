@@ -6,6 +6,7 @@ namespace AppDevProject_BookingSystem
 {
     /// <summary>
     /// Class for authorisation to the main form for the restaurant staff
+    /// (c) Developed by Denis Klyucherov and Yevgeniy Stenyushkin
     /// </summary>
     public class Authorisation
     {

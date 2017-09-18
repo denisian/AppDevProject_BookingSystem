@@ -3,6 +3,10 @@ using System.Windows.Forms;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Form for managing of the table settings, such as name, seats number and minimal seats number
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     public partial class TableSettings : Form
     {
         // Declare this variable to use its method LoadTablesData() (button click) to reload data in the dataGridViewTables on ManageTables form
@@ -151,28 +155,33 @@ namespace AppDevProject_BookingSystem
                 AddTable();
         }
 
+        // Ok button
         private void btnOk_Click(object sender, EventArgs e)
         {
             Submit();
         }
 
+        // Selecting all after enter to the txtTableName
         private void txtTableName_Enter(object sender, EventArgs e)
         {
             txtTableName.SelectAll();
         }
 
+        // Submit after a user pressed the Enter button in the txtTableName
         private void txtTableName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 Submit();
         }
 
+        // Submit after a user pressed the Enter button in the upDownNumSeats
         private void upDownNumSeats_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 Submit();
         }
 
+        // Submit after a user pressed the Enter button in the upDownMinNumSeats
         private void upDownMinNumSeats_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

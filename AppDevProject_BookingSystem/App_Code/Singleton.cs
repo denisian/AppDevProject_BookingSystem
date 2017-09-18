@@ -5,6 +5,7 @@ namespace AppDevProject_BookingSystem
     /// <summary>
     /// Singleton pattern to share the same instance of Bookings and Tables classes between other classes
     /// For example, I use the same instance of the Bookings class to share the same Datatable between ConfigSystem and ManageBookings classes
+    /// (c) Developed by Denis Klyucherov
     /// </summary>
     public class Singleton
     {

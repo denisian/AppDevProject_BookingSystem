@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Form for managing of the employee parameters, such as First and Last names, Email, Password and Access level
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     public partial class EmployeeSettings : Form
     {
         // Declare this variable to use its method LoadEmployeesData() (button click) to reload data in the dataGridViewEmployees on ManageEmployees form
@@ -51,6 +50,7 @@ namespace AppDevProject_BookingSystem
                 LoadEmployeeSettingsToEdit();
         }
 
+        // Loading form to edit (passing parameters from the ManageTables())
         private void LoadEmployeeSettingsToEdit()
         {
             employeeId = ManageEmployees.EmployeeId;
@@ -253,35 +253,41 @@ namespace AppDevProject_BookingSystem
                 AddEmployee();
         }
 
+        // Ok button
         private void btnOk_Click(object sender, EventArgs e)
         {
             Submit();
         }
 
+        // Submit after a user pressed the Enter button in the txtFirstName
         private void txtFirstName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 Submit();
         }
 
+        // Submit after a user pressed the Enter button in the txtLastName
         private void txtLastName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 Submit();
         }
 
+        // Submit after a user pressed the Enter button in the txtEmail
         private void txtEmail_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 Submit();
         }
 
+        // Submit after a user pressed the Enter button in the txtPassword
         private void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 Submit();
         }
 
+        // Submit after a user pressed the Enter button in the cmdAcccessLevel
         private void cmbAccessLevel_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

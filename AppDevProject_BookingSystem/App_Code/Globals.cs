@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Class of global variables, which are used between main classes to exchange the values of variables
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     public static class Globals
     {
         // Use for dataGrdViewBooking in ConfigSystem.cs and then in ManageBooking.cs to know which event triggered opening ManageBooking Form

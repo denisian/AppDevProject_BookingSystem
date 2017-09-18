@@ -7,7 +7,8 @@ using System.Collections.Generic;
 namespace AppDevProject_BookingSystem
 {
     /// <summary>
-    /// It is a main class of the system. It contains methods for checking availability tables and managing bookings (add, update, delete, get info)
+    /// Class contains methods for checking availability tables and managing bookings (add, update, delete, get info)
+    /// (c) Developed by Denis Klyucherov
     /// </summary>
     public class Bookings
     {

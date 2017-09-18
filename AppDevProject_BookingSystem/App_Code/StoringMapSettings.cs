@@ -4,6 +4,11 @@ using System.Data.SqlClient;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Class for retrieving the table map image, table settings and form size from the database and saving them there
+    /// Table image is saved in VARBINARY, table settings and form size - in STRING
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     class StoringMapSettings
     {
         private string connStr = Properties.Settings.Default.MyConnection;
@@ -20,6 +25,13 @@ namespace AppDevProject_BookingSystem
         private string _message;
         public string Message { get { return _message; } }
 
+        /// <summary>
+        /// Saving data in the database
+        /// </summary>
+        /// <param name="restaurantId"></param>
+        /// <param name="tableMapImage"></param>
+        /// <param name="tableMapConfig"></param>
+        /// <returns></returns>
         public bool SavingTableMap(byte restaurantId, byte[] tableMapImage, string tableMapConfig)
         {
             using (conn = new SqlConnection(connStr))
@@ -60,6 +72,11 @@ namespace AppDevProject_BookingSystem
             }
         }
 
+        /// <summary>
+        /// Retrieving data from the database
+        /// </summary>
+        /// <param name="restaurantId"></param>
+        /// <returns></returns>
         public bool RetrievingTableMap(byte restaurantId)
         {
 

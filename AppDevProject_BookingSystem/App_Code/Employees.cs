@@ -4,6 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace AppDevProject_BookingSystem
 {
+    /// <summary>
+    /// Class for managing the restaurant staff (add, update, delete, get info)
+    /// (c) Developed by Denis Klyucherov
+    /// </summary>
     class Employees
     {
         private string connStr = Properties.Settings.Default.MyConnection;
@@ -27,18 +31,6 @@ namespace AppDevProject_BookingSystem
         public string accessLevel;
         private string _message;
         public string Message { get { return _message; } }
-
-        /// <summary>
-        /// Creation Access level list
-        /// </summary>
-        //public List<string> OccasionList()
-        //{
-        //    List<string> accessLevelList = new List<string>();
-        //    string[] levels = new string[] { "Administrator", "Manager", "Employee" };
-        //    foreach (string item in levels)
-        //        accessLevelList.Add(item);
-        //    return accessLevelList;
-        //}
 
         // Get First and Last name by email (use it in ConfigSystem to find out a logged-in user)
         public void GetEmployeeFirstLastNameByEmail(string email)
